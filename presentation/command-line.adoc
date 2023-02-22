@@ -1,0 +1,10 @@
+:revealjs_theme: white
+:source-highlighter: highlightjs
+
+== Tech Talks: System.CommandLine
+* Software Developer @ CGM/KMS
+* https://github.com/enginexon
+
+== System.CommmandLine
+
+== Alternatives
