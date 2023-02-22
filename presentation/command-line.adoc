@@ -6,5 +6,27 @@
 * https://github.com/enginexon
 
 == System.CommmandLine
+* Microsoft's implementation (PREVIEW)
+** https://github.com/commandlineparser/commandline
+** .NET 6.0, .NET Standard 2.0
+* parsing the command-line input
+** POSIX/Windows conventions
+* displaying help text
+* supports tab completion and response files
 
 == Alternatives
+[cols=3*,options=header]
+|===
+| Name 
+| Downloads (total)
+| Downloads (current)
+
+| System.CommandLine
+| 16.1M
+| 1.4M
+
+| CommandLineParser
+| 71.4M
+| 3.5M
+
+|===
