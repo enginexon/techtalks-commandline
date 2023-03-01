@@ -34,3 +34,14 @@
 == System.CommandLine
 * dotnet add package System.CommandLine --prerelease
 
+== Out of box
+* --help
+* --version
+* subcommands
+* required and optional options
+* default values
+* aliases
+* custom validation
+* arrays
+
+

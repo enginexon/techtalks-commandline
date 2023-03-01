@@ -2,8 +2,8 @@
 // Example from https://learn.microsoft.com/en-us/dotnet/standard/commandline/get-started-tutorial
 // ./CommandLineDemo.Scl --help 
 // ./CommandLineDemo.Scl --version
-// ./CommandLineDemo.Scl CommandLineDemo.Scl.deps.json
-// ./CommandLineDemo.Scl CommandLineDemo.Scl.runtimeconfig.json
+// ./CommandLineDemo.Scl --file CommandLineDemo.Scl.deps.json
+// ./CommandLineDemo.Scl --file CommandLineDemo.Scl.runtimeconfig.json
 
 using System.CommandLine;
 
