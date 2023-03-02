@@ -44,4 +44,264 @@
 * custom validation
 * arrays
 
+== List valid argument values
+[source,c#]
+....
+var languageOption = new Option<string>(
+    "--language",
+    "An option that that must be one of the values of a static list.")
+        .FromAmong(
+            "csharp",
+            "fsharp",
+            "vb",
+            "pwsh",
+            "sql");
+....
+
+== Custom binder
+[source,c#]
+....
+public class PersonBinder : BinderBase<Person>
+{
+    private readonly Option<string> _firstNameOption;
+    private readonly Option<string> _lastNameOption;
+
+    public PersonBinder(Option<string> firstNameOption, Option<string> lastNameOption)
+    {
+        _firstNameOption = firstNameOption;
+        _lastNameOption = lastNameOption;
+    }
+
+    protected override Person GetBoundValue(BindingContext bindingContext) =>
+        new Person
+        {
+            FirstName = bindingContext.ParseResult.GetValueForOption(_firstNameOption),
+            LastName = bindingContext.ParseResult.GetValueForOption(_lastNameOption)
+        };
+}
+....
+
+== Custom binder usage
+[source,c#]
+....
+rootCommand.SetHandler((fileOptionValue, person) =>
+    {
+        DoRootCommand(fileOptionValue, person);
+    },
+    fileOption,
+    new PersonBinder(firstNameOption, lastNameOption));
+....
+
+== Set exit codes
+[source,c#]
+....
+rootCommand.SetHandler(() =>
+{
+    return Task.FromResult(100);
+});
+....
+
+[source,c#]
+....
+rootCommand.SetHandler(async (context) =>
+{
+    context.ExitCode = 100;
+});
+....
+
+[.columns]
+== Supported types
+
+[.column]
+* Enums
+* Arrays and lists
+* File system types
+** FileSystemInfo
+** FileInfo
+** DirectoryInfo
+* bool
+* byte
+* DateTime
+* DateTimeOffset
+
+[.column]
+* decimal
+* double
+* float
+* Guid
+* int
+* long
+* sbyte
+* short
+* uint
+* ulong
+
+== Tab completion
+[source,c#]
+....
+dateOption.AddCompletions((ctx) => {
+    var today = System.DateTime.Today;
+    var dates = new List<CompletionItem>();
+    foreach (var i in Enumerable.Range(1, 7))
+    {
+        var date = today.AddDays(i);
+        dates.Add(new CompletionItem(
+            label: date.ToShortDateString(),
+            sortText: $"{i:2}"));
+    }
+    return dates;
+});
+....
+
+== Order of options and arguments
+Equivalent
+
+[source,shell]
+....
+dotnet add package System.CommandLine --prerelease
+dotnet add package --prerelease System.CommandLine
+....
+
+The order does matter
+
+[source,shell]
+....
+myapp argument1 argument2
+myapp argument2 argument1
+....
+
+== Aliases
+[source,shell]
+....
+dotnet build --verbosity quiet
+dotnet build -v quiet
+....
+
+== Case sensitivity
+Command and option names and aliases are case-sensitive by default according to POSIX convention
+
+* --additional-probing-path
+* --Additional-Probing-Path
+* --ADDITIONAL-PROBING-PATH
+
+Case sensitivity does not apply to argument values for options that are based on enums. Enum names are matched regardless of casing.
+
+== Option-argument delimiters
+
+Equivalent
+
+[source,shell]
+....
+dotnet build -v quiet
+dotnet build -v=quiet
+dotnet build -v:quiet
+....
+
+Equivalent
+
+[source,shell]
+....
+myapp -vquiet
+myapp -v quiet
+....
+
+== Option overrides
+[source,shell]
+....
+myapp --delay 3 --message example --delay 2
+....
+
+== Multiple arguments
+[source,shell]
+....
+myapp --list a b c --list d
+....
+
+== Option bundling
+Equivalent
+
+[source,shell]
+....
+git clean -f -d -x
+git clean -fdx
+....
+
+The argument arg would apply only to the option -c
+
+[source,shell]
+....
+myapp -a -b -c arg
+myapp -abc arg
+....
+
+== Boolean options (flags)
+[source,shell]
+....
+myapp --interactive
+myapp --interactive false
+myapp --interactive true
+....
+
+== Response files
+Equivalent
+
+[source,shell]
+....
+dotnet build --no-restore --output ./build-output/
+dotnet @sample1.rsp
+dotnet build @sample2.rsp --output ./build-output/
+....
+
+sample1.rsp
+
+[source,shell]
+....
+build
+--no-restore 
+--output
+./build-output/
+....
+
+sample2.rsp
+
+[source,shell]
+....
+--no-restore
+....
+
+== The [parse] directive
+
+[source,shell]
+....
+myapp [parse] --delay not-an-int --interactive --file filename.txt extra
+....
+
+Output
+
+[source,shell]
+....
+![ myapp [ --delay !<not-an-int> ] [ --interactive <True> ] [ --file <filename.txt> ] *[ --fgcolor <White> ] ]   ???--> extra
+....
+
+== The [suggest] directive
+[source,shell]
+....
+dotnet [suggest] buil
+....
+
+Output
+
+[source,shell]
+....
+build
+build-server
+msbuild
+....
+
+== Links
+https://learn.microsoft.com/en-us/dotnet/standard/commandline/get-started-tutorial
+
+https://github.com/enginexon/techtalks-commandline
+
+== Thank you
 
